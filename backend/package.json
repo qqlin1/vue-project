@@ -1,0 +1,17 @@
+{
+  "name": "vuepick-backend",
+  "version": "1.0.0",
+  "description": "Backend server for vuepick",
+  "main": "server-complete.js",
+  "scripts": {
+    "start": "node server-complete.js",
+    "dev": "nodemon server-complete.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

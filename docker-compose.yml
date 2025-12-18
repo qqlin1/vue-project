@@ -1,0 +1,32 @@
+services:
+  # 后端 API 服务
+  vuepick-backend:
+    image: node:18-alpine
+    container_name: vuepick-backend
+    ports:
+      - "10086:10086"
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: sh -c "cp backend-package.json package.json && npm install && npm start"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    networks:
+      - vuepick-network
+
+  # Vue 前端应用 (可选，也可以单独运行)
+  vuepick-frontend:
+    build: .
+    ports:
+      - "5174:5173"
+    container_name: vuepick-frontend
+    depends_on:
+      - vuepick-backend
+    restart: unless-stopped
+    networks:
+      - vuepick-network
+
+networks:
+  vuepick-network:
+    driver: bridge

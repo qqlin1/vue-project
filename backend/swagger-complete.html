@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VuePick 完整 API 文档</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #e1e5e9;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        .header-info {
+            background: #e8f4fd;
+            border: 1px solid #bee5eb;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        .section h2 {
+            color: #495057;
+            border-left: 4px solid #007bff;
+            padding-left: 15px;
+            margin-bottom: 20px;
+        }
+        .endpoint {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: box-shadow 0.2s;
+        }
+        .endpoint:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .method {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            margin-right: 10px;
+        }
+        .method.get { background-color: #007bff; }
+        .method.post { background-color: #28a745; }
+        .method.put { background-color: #ffc107; color: #212529; }
+        .method.delete { background-color: #dc3545; }
+        .path {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: #495057;
+            font-size: 14px;
+        }
+        .description {
+            margin: 10px 0;
+            color: #666;
+            font-size: 14px;
+        }
+        .try-it {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .try-it:hover { background-color: #0056b3; }
+        .response {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            display: none;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .status.success { background-color: #d4edda; color: #155724; }
+        .status.error { background-color: #f8d7da; color: #721c24; }
+        .quick-test {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 30px;
+        }
+        .quick-test button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .quick-test button:hover { background-color: #218838; }
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e9ecef;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #6c757d;
+            border-bottom: 2px solid transparent;
+        }
+        .tab.active {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 VuePick 完整 API 文档 (48个接口)</h1>
+
+        <div class="header-info">
+            <h3>📋 服务信息</h3>
+            <p><strong>Base URL:</strong> http://127.0.0.1:10086</p>
+            <p><strong>默认账号:</strong> admin / 111111</p>
+            <p><strong>接口总数:</strong> 48个API接口</p>
+            <p><strong>覆盖模块:</strong> 权限管理、商品管理、文件上传</p>
+        </div>
+
+        <div class="quick-test">
+            <h3>🎯 快速测试</h3>
+            <p>点击下面按钮进行常用接口测试：</p>
+            <button onclick="testLogin()">测试登录</button>
+            <button onclick="testPermission()">测试菜单权限</button>
+            <button onclick="testRoles()">测试角色管理</button>
+            <button onclick="testUsers()">测试用户管理</button>
+            <button onclick="testCategories()">测试商品分类</button>
+            <button onclick="testTrademarks()">测试品牌管理</button>
+            <button onclick="testSPU()">测试SPU管理</button>
+            <button onclick="testSKU()">测试SKU管理</button>
+            <div id="quick-response" class="response" style="display:none;"></div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('auth')">🔐 权限管理</button>
+            <button class="tab" onclick="showTab('product')">🛍️ 商品管理</button>
+            <button class="tab" onclick="showTab('utils')">🔧 工具接口</button>
+        </div>
+
+        <!-- 权限管理模块 -->
+        <div id="auth" class="tab-content active">
+            <div class="section">
+                <h2>🔐 后台登录与用户信息 (4个接口)</h2>
+
+                <div class="endpoint">
+                    <span class="method post">POST</span>
+                    <span class="path">/admin/acl/index/login</span>
+                    <div class="description">用户登录接口 - 管理员登录系统</div>
+                    <button class="try-it" onclick="tryCall('POST', '/admin/acl/index/login', {username:'admin',password:'111111'})">Try it out</button>
+                    <div id="login-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method post">POST</span>
+                    <span class="path">/admin/acl/index/logout</span>
+                    <div class="description">用户登出接口 - 安全退出系统</div>
+                    <button class="try-it" onclick="tryCall('POST', '/admin/acl/index/logout', {})">Try it out</button>
+                    <div id="logout-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/admin/acl/index/info</span>
+                    <div class="description">用户信息接口 - 获取当前登录用户详细信息</div>
+                    <button class="try-it" onclick="tryCall('GET', '/admin/acl/index/info', null)">Try it out</button>
+                    <div id="userinfo-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/admin/acl/user/:page/:limit</span>
+                    <div class="description">用户分页列表接口 - 获取用户管理列表</div>
+                    <button class="try-it" onclick="tryCall('GET', '/admin/acl/user/1/5', null)">Try it out</button>
+                    <div id="userlist-response" class="response"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🏗️ 菜单管理 (6个接口)</h2>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/admin/acl/permission</span>
+                    <div class="description">获取菜单列表接口 - 获取系统完整菜单树结构</div>
+                    <button class="try-it" onclick="tryCall('GET', '/admin/acl/permission', null)">Try it out</button>
+                    <div id="permission-list-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method post">POST</span>
+                    <span class="path">/admin/acl/permission/doAssign</span>
+                    <div class="description">角色分配权限接口 - 为角色分配菜单权限</div>
+                    <button class="try-it" onclick="tryCall('POST', '/admin/acl/permission/doAssign', {roleId:1,permissionIdList:[1,2,3]})">Try it out</button>
+                    <div id="permission-assign-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method delete">DELETE</span>
+                    <span class="path">/admin/acl/permission/remove/:id</span>
+                    <div class="description">删除菜单接口 - 删除指定菜单项</div>
+                    <button class="try-it" onclick="tryCall('DELETE', '/admin/acl/permission/remove/1', null)">Try it out</button>
+                    <div id="permission-remove-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method post">POST</span>
+                    <span class="path">/admin/acl/permission/save</span>
+                    <div class="description">新增菜单接口 - 创建新的菜单项</div>
+                    <button class="try-it" onclick="tryCall('POST', '/admin/acl/permission/save', {title:'测试菜单',name:'Test',path:'/test'})">Try it out</button>
+                    <div id="permission-save-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/admin/acl/permission/toAssign/:roleId</span>
+                    <div class="description">根据角色获取菜单接口 - 获取角色的权限分配情况</div>
+                    <button class="try-it" onclick="tryCall('GET', '/admin/acl/permission/toAssign/1', null)">Try it out</button>
+                    <div id="permission-toassign-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method put">PUT</span>
+                    <span class="path">/admin/acl/permission/update</span>
+                    <div class="description">更新菜单接口 - 修改现有菜单信息</div>
+                    <button class="try-it" onclick="tryCall('PUT', '/admin/acl/permission/update', {id:1,title:'更新菜单'})">Try it out</button>
+                    <div id="permission-update-response" class="response"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>👥 角色管理 (4个接口)</h2>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/admin/acl/role/:page/:limit</span>
+                    <div class="description">获取角色分页列表接口 - 获取系统角色列表</div>
+                    <button class="try-it" onclick="tryCall('GET', '/admin/acl/role/1/5', null)">Try it out</button>
+                    <div id="role-list-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method post">POST</span>
+                    <span class="path">/admin/acl/role/save</span>
+                    <div class="description">新增角色接口 - 创建新的系统角色</div>
+                    <button class="try-it" onclick="tryCall('POST', '/admin/acl/role/save', {roleName:'测试角色'})">Try it out</button>
+                    <div id="role-save-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method put">PUT</span>
+                    <span class="path">/admin/acl/role/update</span>
+                    <div class="description">更新角色接口 - 修改角色信息</div>
+                    <button class="try-it" onclick="tryCall('PUT', '/admin/acl/role/update', {id:1,roleName:'更新角色'})">Try it out</button>
+                    <div id="role-update-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method delete">DELETE</span>
+                    <span class="path">/admin/acl/role/remove/:id</span>
+                    <div class="description">删除角色接口 - 删除指定角色</div>
+                    <button class="try-it" onclick="tryCall('DELETE', '/admin/acl/role/remove/1', null)">Try it out</button>
+                    <div id="role-remove-response" class="response"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>👤 用户管理 (7个接口)</h2>
+
+                <div class="endpoint">
+                    <span class="method delete">DELETE</span>
+                    <span class="path">/admin/acl/user/batchRemove</span>
+                    <div class="description">批量删除用户接口 - 同时删除多个用户</div>
+                    <button class="try-it" onclick="tryCall('DELETE', '/admin/acl/user/batchRemove', {idList:[1,2,3]})">Try it out</button>
+                    <div id="user-batch-remove-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method post">POST</span>
+                    <span class="path">/admin/acl/user/doAssignRole</span>
+                    <div class="description">用户分配角色接口 - 为用户分配角色权限</div>
+                    <button class="try-it" onclick="tryCall('POST', '/admin/acl/user/doAssignRole', {adminId:1,roleIdList:[1,2]})">Try it out</button>
+                    <div id="user-assign-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method delete">DELETE</span>
+                    <span class="path">/admin/acl/user/remove/:id</span>
+                    <div class="description">删除用户接口 - 删除指定用户</div>
+                    <button class="try-it" onclick="tryCall('DELETE', '/admin/acl/user/remove/1', null)">Try it out</button>
+                    <div id="user-remove-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method post">POST</span>
+                    <span class="path">/admin/acl/user/save</span>
+                    <div class="description">用户新增接口 - 创建新用户</div>
+                    <button class="try-it" onclick="tryCall('POST', '/admin/acl/user/save', {username:'testuser',name:'测试用户',phone:'13800138000'})">Try it out</button>
+                    <div id="user-save-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/admin/acl/user/toAssign/:adminId</span>
+                    <div class="description">用户角色分配接口 - 获取用户当前角色分配</div>
+                    <button class="try-it" onclick="tryCall('GET', '/admin/acl/user/toAssign/1', null)">Try it out</button>
+                    <div id="user-toassign-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method put">PUT</span>
+                    <span class="path">/admin/acl/user/update</span>
+                    <div class="description">更新用户接口 - 修改用户信息</div>
+                    <button class="try-it" onclick="tryCall('PUT', '/admin/acl/user/update', {id:1,username:'updateduser',name:'更新用户'})">Try it out</button>
+                    <div id="user-update-response" class="response"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 商品管理模块 -->
+        <div id="product" class="tab-content">
+            <div class="section">
+                <h2>⚙️ 商品基础属性 (3个接口)</h2>
+
+                <div class="endpoint">
+                    <span class="method delete">DELETE</span>
+                    <span class="path">/admin/product/deleteAttr/:attrId</span>
+                    <div class="description">删除基础属性接口 - 删除商品属性</div>
+                    <button class="try-it" onclick="tryCall('DELETE', '/admin/product/deleteAttr/1', null)">Try it out</button>
+                    <div id="attr-delete-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/admin/product/attrInfoList/:c1Id/:c2Id/:c3Id</span>
+                    <div class="description">获取分类下属性接口 - 根据三级分类获取属性列表</div>
+                    <button class="try-it" onclick="tryCall('GET', '/admin/product/attrInfoList/1/11/111', null)">Try it out</button>
+                    <div id="attr-list-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method post">POST</span>
+                    <span class="path">/admin/product/saveAttrInfo</span>
+                    <div class="description">保存属性接口 - 新增或修改商品属性</div>
+                    <button class="try-it" onclick="tryCall('POST', '/admin/product/saveAttrInfo', {attrName:'测试属性',attrValueList:[{valueName:'测试值'}]})">Try it out</button>
+                    <div id="attr-save-response" class="response"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🏢 品牌管理 (5个接口)</h2>
+
+                <div class="endpoint">
+                    <span class="method delete">DELETE</span>
+                    <span class="path">/admin/product/baseTrademark/remove/:id</span>
+                    <div class="description">删除品牌接口 - 删除指定品牌</div>
+                    <button class="try-it" onclick="tryCall('DELETE', '/admin/product/baseTrademark/remove/1', null)">Try it out</button>
+                    <div id="trademark-remove-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method post">POST</span>
+                    <span class="path">/admin/product/baseTrademark/save</span>
+                    <div class="description">新增品牌接口 - 创建新品牌</div>
+                    <button class="try-it" onclick="tryCall('POST', '/admin/product/baseTrademark/save', {tmName:'测试品牌',logoUrl:'http://example.com/logo.png'})">Try it out</button>
+                    <div id="trademark-save-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method put">PUT</span>
+                    <span class="path">/admin/product/baseTrademark/update</span>
+                    <div class="description">更新品牌接口 - 修改品牌信息</div>
+                    <button class="try-it" onclick="tryCall('PUT', '/admin/product/baseTrademark/update', {id:1,tmName:'更新品牌'})">Try it out</button>
+                    <div id="trademark-update-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/admin/product/baseTrademark/:page/:limit</span>
+                    <div class="description">品牌分页列表接口 - 获取品牌分页数据</div>
+                    <button class="try-it" onclick="tryCall('GET', '/admin/product/baseTrademark/1/5', null)">Try it out</button>
+                    <div id="trademark-list-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/admin/product/baseTrademark/getTrademarkList</span>
+                    <div class="description">获取全部品牌接口 - 获取所有品牌数据（SPU选择用）</div>
+                    <button class="try-it" onclick="tryCall('GET', '/admin/product/baseTrademark/getTrademarkList', null)">Try it out</button>
+                    <div id="trademark-all-response" class="response"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🏷️ 商品分类 (3个接口)</h2>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/admin/product/getCategory1</span>
+                    <div class="description">获取一级分类接口 - 获取商品一级分类列表</div>
+                    <button class="try-it" onclick="tryCall('GET', '/admin/product/getCategory1', null)">Try it out</button>
+                    <div id="category1-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/admin/product/getCategory2/:id</span>
+                    <div class="description">获取二级分类接口 - 根据一级分类ID获取二级分类</div>
+                    <button class="try-it" onclick="tryCall('GET', '/admin/product/getCategory2/1', null)">Try it out</button>
+                    <div id="category2-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/admin/product/getCategory3/:id</span>
+                    <div class="description">获取三级分类接口 - 根据二级分类ID获取三级分类</div>
+                    <button class="try-it" onclick="tryCall('GET', '/admin/product/getCategory3/11', null)">Try it out</button>
+                    <div id="category3-response" class="response"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📱 商品 SPU 管理 (5个接口)</h2>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/admin/product/:page/:limit</span>
+                    <div class="description">获取SPU分页列表接口 - 获取商品SPU列表</div>
+                    <button class="try-it" onclick="tryCall('GET', '/admin/product/1/5', null)">Try it out</button>
+                    <div id="spu-list-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/admin/product/baseSaleAttrList</span>
+                    <div class="description">获取全部销售属性接口 - 获取销售属性列表</div>
+                    <button class="try-it" onclick="tryCall('GET', '/admin/product/baseSaleAttrList', null)">Try it out</button>
+                    <div id="saleattr-list-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method post">POST</span>
+                    <span class="path">/admin/product/saveSpuInfo</span>
+                    <div class="description">新增SPU接口 - 创建新的商品SPU</div>
+                    <button class="try-it" onclick="tryCall('POST', '/admin/product/saveSpuInfo', {spuName:'测试商品',description:'测试描述',category3Id:111})">Try it out</button>
+                    <div id="spu-save-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method put">PUT</span>
+                    <span class="path">/admin/product/updateSpuInfo</span>
+                    <div class="description">更新SPU接口 - 修改商品SPU信息</div>
+                    <button class="try-it" onclick="tryCall('PUT', '/admin/product/updateSpuInfo', {id:1,spuName:'更新商品'})">Try it out</button>
+                    <div id="spu-update-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method delete">DELETE</span>
+                    <span class="path">/admin/product/deleteSpu/:spuId</span>
+                    <div class="description">删除SPU接口 - 删除指定商品SPU</div>
+                    <button class="try-it" onclick="tryCall('DELETE', '/admin/product/deleteSpu/1', null)">Try it out</button>
+                    <div id="spu-delete-response" class="response"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📦 商品 SKU 管理 (10个接口)</h2>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/admin/product/spuImageList/:spuId</span>
+                    <div class="description">获取SPU图片接口 - 获取SPU下的商品图片</div>
+                    <button class="try-it" onclick="tryCall('GET', '/admin/product/spuImageList/1', null)">Try it out</button>
+                    <div id="spu-image-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/admin/product/spuSaleAttrList/:spuId</span>
+                    <div class="description">获取SPU销售属性接口 - 获取SPU下的销售属性</div>
+                    <button class="try-it" onclick="tryCall('GET', '/admin/product/spuSaleAttrList/1', null)">Try it out</button>
+                    <div id="spu-saleattr-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method post">POST</span>
+                    <span class="path">/admin/product/saveSkuInfo</span>
+                    <div class="description">新增SKU接口 - 创建新的商品SKU</div>
+                    <button class="try-it" onclick="tryCall('POST', '/admin/product/saveSkuInfo', {skuName:'测试SKU',price:1999,spuId:1})">Try it out</button>
+                    <div id="sku-save-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/admin/product/findBySpuId/:spuId</span>
+                    <div class="description">根据SPU查询SKU接口 - 获取SPU下的所有SKU</div>
+                    <button class="try-it" onclick="tryCall('GET', '/admin/product/findBySpuId/1', null)">Try it out</button>
+                    <div id="sku-findbyspu-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/admin/product/list/:page/:limit</span>
+                    <div class="description">SKU分页列表接口 - 获取SKU商品列表</div>
+                    <button class="try-it" onclick="tryCall('GET', '/admin/product/list/1/5', null)">Try it out</button>
+                    <div id="sku-list-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/admin/product/onSale/:skuId</span>
+                    <div class="description">商品上架接口 - 将商品设置为上架状态</div>
+                    <button class="try-it" onclick="tryCall('GET', '/admin/product/onSale/1001', null)">Try it out</button>
+                    <div id="sku-onsale-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/admin/product/cancelSale/:skuId</span>
+                    <div class="description">商品下架接口 - 将商品设置为下架状态</div>
+                    <button class="try-it" onclick="tryCall('GET', '/admin/product/cancelSale/1001', null)">Try it out</button>
+                    <div id="sku-cancelsale-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/admin/product/getSkuInfo/:skuId</span>
+                    <div class="description">商品详情接口 - 获取SKU商品详细信息</div>
+                    <button class="try-it" onclick="tryCall('GET', '/admin/product/getSkuInfo/1001', null)">Try it out</button>
+                    <div id="sku-info-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method delete">DELETE</span>
+                    <span class="path">/admin/product/deleteSKU/:skuId</span>
+                    <div class="description">删除商品接口 - 删除指定SKU商品</div>
+                    <button class="try-it" onclick="tryCall('DELETE', '/admin/product/deleteSKU/1001', null)">Try it out</button>
+                    <div id="sku-delete-response" class="response"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 工具接口模块 -->
+        <div id="utils" class="tab-content">
+            <div class="section">
+                <h2>📎 文件上传 (1个接口)</h2>
+
+                <div class="endpoint">
+                    <span class="method post">POST</span>
+                    <span class="path">/admin/product/fileUpload</span>
+                    <div class="description">上传文件接口 - 上传商品图片或文件</div>
+                    <button class="try-it" onclick="tryCall('POST', '/admin/product/fileUpload', null)">Try it out</button>
+                    <div id="file-upload-response" class="response"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'http://127.0.0.1:10086';
+
+        // 标签页切换
+        function showTab(tabName) {
+            // 隐藏所有标签内容
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // 显示选中的标签内容
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // API调用函数
+        async function makeRequest(method, url, body = null) {
+            try {
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                };
+
+                if (body) {
+                    options.body = JSON.stringify(body);
+                }
+
+                const response = await fetch(BASE_URL + url, options);
+                const data = await response.json();
+
+                return {
+                    success: response.ok,
+                    status: response.status,
+                    data: data
+                };
+            } catch (error) {
+                return {
+                    success: false,
+                    error: error.message
+                };
+            }
+        }
+
+        // 通用API测试函数
+        async function tryCall(method, url, body) {
+            const cleanUrl = url.replace(/:\w+/g, '1');
+            const result = await makeRequest(method, cleanUrl, body);
+
+            const responseId = url.replace(/[^a-zA-Z0-9]/g, '-') + '-response';
+            const responseElement = document.getElementById(responseId);
+
+            if (responseElement) {
+                responseElement.textContent = JSON.stringify(result, null, 2);
+                responseElement.style.display = 'block';
+
+                const statusElement = document.getElementById(responseId.replace('-response', '-status'));
+                if (statusElement) {
+                    statusElement.className = result.success ? 'status success' : 'status error';
+                    statusElement.textContent = result.success ? `✅ Success (${result.status})` : `❌ Error: ${result.error}`;
+                }
+            }
+
+            return result;
+        }
+
+        // 快速测试函数
+        async function testLogin() {
+            const result = await makeRequest('POST', '/admin/acl/index/login', {
+                username: 'admin',
+                password: '111111'
+            });
+            document.getElementById('quick-response').textContent = JSON.stringify(result, null, 2);
+            document.getElementById('quick-response').style.display = 'block';
+        }
+
+        async function testPermission() {
+            const result = await makeRequest('GET', '/admin/acl/permission', null);
+            document.getElementById('quick-response').textContent = JSON.stringify(result, null, 2);
+            document.getElementById('quick-response').style.display = 'block';
+        }
+
+        async function testRoles() {
+            const result = await makeRequest('GET', '/admin/acl/role/1/5', null);
+            document.getElementById('quick-response').textContent = JSON.stringify(result, null, 2);
+            document.getElementById('quick-response').style.display = 'block';
+        }
+
+        async function testUsers() {
+            const result = await makeRequest('GET', '/admin/acl/user/1/5', null);
+            document.getElementById('quick-response').textContent = JSON.stringify(result, null, 2);
+            document.getElementById('quick-response').style.display = 'block';
+        }
+
+        async function testCategories() {
+            const result = await makeRequest('GET', '/admin/product/getCategory1', null);
+            document.getElementById('quick-response').textContent = JSON.stringify(result, null, 2);
+            document.getElementById('quick-response').style.display = 'block';
+        }
+
+        async function testTrademarks() {
+            const result = await makeRequest('GET', '/admin/product/baseTrademark/1/5', null);
+            document.getElementById('quick-response').textContent = JSON.stringify(result, null, 2);
+            document.getElementById('quick-response').style.display = 'block';
+        }
+
+        async function testSPU() {
+            const result = await makeRequest('GET', '/admin/product/1/5', null);
+            document.getElementById('quick-response').textContent = JSON.stringify(result, null, 2);
+            document.getElementById('quick-response').style.display = 'block';
+        }
+
+        async function testSKU() {
+            const result = await makeRequest('GET', '/admin/product/list/1/5', null);
+            document.getElementById('quick-response').textContent = JSON.stringify(result, null, 2);
+            document.getElementById('quick-response').style.display = 'block';
+        }
+
+        // 页面加载时显示连接状态
+        window.onload = async function() {
+            try {
+                const response = await fetch(BASE_URL + '/');
+                const data = await response.json();
+                console.log('✅ Backend Status:', data);
+            } catch (error) {
+                alert('❌ 无法连接到后端服务，请确保服务正在运行在 http://127.0.0.1:10086');
+            }
+        };
+    </script>
+</body>
+</html>
